@@ -2,12 +2,26 @@
 This is ros realization of [AnyNet model](https://github.com/mileyan/AnyNet).
 
 # Installation 
-1. `up_container.sh` to run docker
-2. `docker ps` to see what ID this container has
-3. change ID in `connect2contatiner.sh`
-4. `connect2contatiner.sh` to connect to this container
-5. `roscore` in one terminal
-6. `run.sh` in another terminal
+```
+cd docker
+sh build.sh
+sh start.sh
+sh into.sh
+cd catkin_ws
+catkin_make
+source devel/setup.bash
+cd src/anynet_ros/scripts
+sudo sh compile_spn.sh
+cd $home
+```
 
-# Settings
-See `src/run.sh` and code to learn AnyNet parameters.
+# Launch
+```
+roslaunch anynet_ros anynet.launch --screen \
+    left_images:=/left/image_raw \
+    right_images:=/right/image_raw \
+    output_topic:=/anynet_disparities \
+    input_w:=1200 input_h:=576
+```
+
+Note that images will be resized to `(input_w, input_h)`. These parameters should be divisible by 16 due to model's architecture.
