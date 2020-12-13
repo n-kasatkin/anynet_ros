@@ -1,0 +1,20 @@
+<launch>
+    <arg name="left_images" default="/left/image_raw" />
+    <arg name="right_images" default="/right/image_raw" />
+    <arg name="output_topic" default="/anynet_disparities" />
+    <arg name="input_w" default="1200" />
+    <arg name="input_h" default="576" />
+    <arg name="checkpoint" default="../catkin_ws/src/anynet_ros/scripts/neuralnetwork/checkpoint/kitti2012_ck/checkpoint.tar" />
+    <arg name="with_spn" default="True" />
+
+    <node name="anynet_ros_node" pkg="anynet_ros" type="run.py">
+        <param name="left_images" value="$(arg left_images)" />
+        <param name="right_images" value="$(arg right_images)" />
+        <param name="output_topic" value="$(arg output_topic)" />
+        <param name="input_w" value="$(arg input_w)" />
+        <param name="input_h" value="$(arg input_h)" />
+        <param name="checkpoint" value="$(arg checkpoint)" />
+        <param name="with_spn" value="$(arg with_spn)" />
+
+    </node>
+</launch>
