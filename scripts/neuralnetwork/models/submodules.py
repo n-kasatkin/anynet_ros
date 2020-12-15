@@ -17,7 +17,7 @@ def preconv2d(in_planes, out_planes, kernel_size, stride, pad, dilation=1, bn=Tr
             nn.Conv2d(in_planes, out_planes, kernel_size=kernel_size, stride=stride, padding=dilation if dilation > 1 else pad, dilation=dilation, bias=False))
 
 class unetUp(nn.Module):
-    def __init__(self, in_size, out_size, is_deconv):
+    def __init__(self, in_size, out_size, is_deconv, scale_factor=2):
         super(unetUp, self).__init__()
         self.in_size = in_size
         self.out_size = out_size
@@ -28,7 +28,7 @@ class unetUp(nn.Module):
                 nn.ConvTranspose2d(in_size, out_size, kernel_size=2, stride=2, padding=0)
             )
         else:
-            self.up = nn.UpsamplingBilinear2d(scale_factor=2)
+            self.up = nn.UpsamplingBilinear2d(scale_factor=scale_factor)
             in_size = int(in_size * 1.5)
 
         self.conv = nn.Sequential(
@@ -55,17 +55,17 @@ class feature_extraction_conv(nn.Module):
 
         inC = nC
         outC = 2*nC
-        block0 = self._make_block(inC, outC, nblock)
+        block0 = self._make_block(inC, outC, nblock, mp_size=1)
         self.block0 = nn.Sequential(downsample_conv, block0)
 
         nC = 2*nC
         self.blocks = []
         for i in range(2):
-            self.blocks.append(self._make_block((2**i)*nC,  (2**(i+1))*nC, nblock))
+            self.blocks.append(self._make_block((2**i)*nC,  (2**(i+1))*nC, nblock, mp_size=2))
 
         self.upblocks = []
         for i in reversed(range(2)):
-            self.upblocks.append(unetUp(nC*2**(i+1), nC*2**i, False))
+            self.upblocks.append(unetUp(nC*2**(i+1), nC*2**i, False, scale_factor=2))
 
         self.blocks = nn.ModuleList(self.blocks)
         self.upblocks = nn.ModuleList(self.upblocks)
@@ -79,9 +79,9 @@ class feature_extraction_conv(nn.Module):
             elif isinstance(m, nn.Linear):
                 nn.init.constant_(m.bias, 0)
 
-    def _make_block(self, inC, outC, nblock ):
+    def _make_block(self, inC, outC, nblock, mp_size=2):
         model = []
-        model.append(nn.MaxPool2d(2,2))
+        model.append(nn.MaxPool2d(mp_size, mp_size))
         for i in range(nblock):
             model.append(preconv2d(inC, outC, 3, 1, 1))
             inC = outC

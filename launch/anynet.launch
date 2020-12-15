@@ -4,7 +4,7 @@
     <arg name="output_topic" default="/anynet_disparities" />
     <arg name="input_w" default="1200" />
     <arg name="input_h" default="576" />
-    <arg name="checkpoint" default="../catkin_ws/src/anynet_ros/scripts/neuralnetwork/checkpoint/kitti2012_ck/checkpoint.tar" />
+    <arg name="checkpoint" default="../catkin_ws/src/anynet_ros/scripts/neuralnetwork/checkpoint/kitti2015_2x_downsample/checkpoint.tar" />
     <arg name="with_spn" default="True" />
 
     <node name="anynet_ros_node" pkg="anynet_ros" type="run.py">

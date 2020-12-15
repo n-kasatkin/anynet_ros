@@ -25,7 +25,7 @@ def add_model_specific_args(parent_parser):
                         help='maxium disparity')
     parser.add_argument('--loss_weights', type=float, nargs='+', default=[0.25, 0.5, 1., 1.])
     parser.add_argument('--max_disparity', type=int, default=192)
-    parser.add_argument('--maxdisplist', type=int, nargs='+', default=[12, 3, 3])
+    parser.add_argument('--maxdisplist', type=int, nargs='+', default=[24, 6, 6])
     parser.add_argument('--datatype', default='2012',
                         help='datapath')
     parser.add_argument('--datapath', default=None, help='datapath')
