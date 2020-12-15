@@ -6,6 +6,8 @@
     <arg name="input_h" default="576" />
     <arg name="checkpoint" default="../catkin_ws/src/anynet_ros/scripts/neuralnetwork/checkpoint/kitti2015_2x_downsample/checkpoint.tar" />
     <arg name="with_spn" default="True" />
+    <arg name="disp2depth" default="False" />
+    <arg name="focal_baseline" default="359.09" />
 
     <node name="anynet_ros_node" pkg="anynet_ros" type="run.py">
         <param name="left_images" value="$(arg left_images)" />
@@ -15,6 +17,8 @@
         <param name="input_h" value="$(arg input_h)" />
         <param name="checkpoint" value="$(arg checkpoint)" />
         <param name="with_spn" value="$(arg with_spn)" />
+        <param name="disp2depth" value="$(arg disp2depth)" />
+        <param name="focal_baseline" value="$(arg focal_baseline)" />
 
     </node>
 </launch>
