@@ -62,6 +62,8 @@ def callback(imgL, imgR, verbose=False, quiet=False):
         rospy.loginfo('input_msg step    : {}'.format(imgL.step))
         rospy.loginfo('input_msg encoding: {}'.format(imgL.encoding))
 
+    h, w = imgL.height, imgL.width
+    header = imgL.header
     imgL = br.imgmsg_to_cv2(imgL, desired_encoding='rgb8')
     imgR = br.imgmsg_to_cv2(imgR, desired_encoding='rgb8')
 
@@ -78,8 +80,12 @@ def callback(imgL, imgR, verbose=False, quiet=False):
         disparity[disparity != 0] = args.focal_baseline / disparity[disparity != 0]
         disparity = disparity.cpu().numpy()
 
+    # Postprocess
+    disparity = cv2.resize(disparity, (w, h))
+
     # Convert to msg and publish
     msg = br.cv2_to_imgmsg(disparity)
+    msg.header = header
     pub_.publish(msg)
 
     if verbose:
